@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f0fdf4; /* hijau muda lembut */
+}
+
+h1 {
+  color: #065f46; /* hijau gelap */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 1px solid #a7f3d0;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #dcfce7;
+}

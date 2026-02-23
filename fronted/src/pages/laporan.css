@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fef2f2; /* merah muda */
+}
+
+h1 {
+  color: #991b1b; /* merah gelap */
+}

@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fefce8; /* krem */
+}
+
+h1 {
+  color: #b45309; /* cokelat gelap */
+}
