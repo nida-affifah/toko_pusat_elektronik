@@ -2,7 +2,7 @@ import pool from "../config/db.js";
 
 /**
  * ===============================
- * GET PRODUK (HANYA YANG AKTIF)
+ * GET PRODUK AKTIF
  * ===============================
  */
 export const getProduk = async (req, res) => {
@@ -25,7 +25,7 @@ export const getProduk = async (req, res) => {
 
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
+    console.error("GET ERROR:", error);
     res.status(500).json({ message: "Gagal mengambil data produk" });
   }
 };
@@ -33,7 +33,6 @@ export const getProduk = async (req, res) => {
 /**
  * ===============================
  * GET SEMUA PRODUK (ADMIN)
- * termasuk yang nonaktif
  * ===============================
  */
 export const getAllProdukAdmin = async (req, res) => {
@@ -55,8 +54,8 @@ export const getAllProdukAdmin = async (req, res) => {
 
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Gagal mengambil data produk" });
+    console.error("GET ALL ERROR:", error);
+    res.status(500).json({ message: "Gagal mengambil semua produk" });
   }
 };
 
@@ -84,14 +83,69 @@ export const addProduk = async (req, res) => {
 
     res.json({ message: "Produk berhasil ditambahkan" });
   } catch (error) {
-    console.error(error);
+    console.error("ADD ERROR:", error);
     res.status(500).json({ message: "Gagal menambahkan produk" });
   }
 };
 
 /**
  * ===============================
- * DEACTIVE PRODUK (SOFT DELETE)
+ * UPDATE PRODUK
+ * ===============================
+ */
+export const updateProduk = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_produk, harga, stok, id_kategori, id_supplier } = req.body;
+
+    const result = await pool.query(
+      `
+      UPDATE produk
+      SET nama_produk=$1, harga=$2, stok=$3, id_kategori=$4, id_supplier=$5
+      WHERE id_produk=$6
+      `,
+      [nama_produk, harga, stok, id_kategori, id_supplier, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Produk tidak ditemukan" });
+    }
+
+    res.json({ message: "Produk berhasil diupdate" });
+  } catch (error) {
+    console.error("UPDATE ERROR:", error);
+    res.status(500).json({ message: "Gagal update produk" });
+  }
+};
+
+/**
+ * ===============================
+ * DELETE PRODUK (HARD DELETE)
+ * ===============================
+ */
+export const deleteProduk = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "DELETE FROM produk WHERE id_produk=$1",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Produk tidak ditemukan" });
+    }
+
+    res.json({ message: "Produk berhasil dihapus" });
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    res.status(500).json({ message: "Gagal hapus produk" });
+  }
+};
+
+/**
+ * ===============================
+ * SOFT DELETE (NONAKTIFKAN)
  * ===============================
  */
 export const deactiveProduk = async (req, res) => {
@@ -99,7 +153,7 @@ export const deactiveProduk = async (req, res) => {
     const { id } = req.params;
 
     const result = await pool.query(
-      "UPDATE produk SET is_active = false WHERE id_produk = $1",
+      "UPDATE produk SET is_active=false WHERE id_produk=$1",
       [id]
     );
 
@@ -109,14 +163,14 @@ export const deactiveProduk = async (req, res) => {
 
     res.json({ message: "Produk berhasil dinonaktifkan" });
   } catch (error) {
-    console.error(error);
+    console.error("DEACTIVE ERROR:", error);
     res.status(500).json({ message: "Gagal menonaktifkan produk" });
   }
 };
 
 /**
  * ===============================
- * AKTIFKAN KEMBALI PRODUK
+ * AKTIFKAN PRODUK
  * ===============================
  */
 export const activeProduk = async (req, res) => {
@@ -124,7 +178,7 @@ export const activeProduk = async (req, res) => {
     const { id } = req.params;
 
     const result = await pool.query(
-      "UPDATE produk SET is_active = true WHERE id_produk = $1",
+      "UPDATE produk SET is_active=true WHERE id_produk=$1",
       [id]
     );
 
@@ -134,7 +188,7 @@ export const activeProduk = async (req, res) => {
 
     res.json({ message: "Produk berhasil diaktifkan kembali" });
   } catch (error) {
-    console.error(error);
+    console.error("ACTIVE ERROR:", error);
     res.status(500).json({ message: "Gagal mengaktifkan produk" });
   }
 };
