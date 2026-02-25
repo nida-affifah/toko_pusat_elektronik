@@ -9,23 +9,41 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post("/auth/login", { username, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      alert("Login gagal");
-      console.error(err);
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await api.post("/auth/login", { username, password });
+
+    // simpan token
+    localStorage.setItem("token", res.data.token);
+
+    // ✅ simpan seluruh data user
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+
+    navigate("/dashboard");
+  } catch (err) {
+    alert("Login gagal");
+    console.error(err);
+  }
+};
 
   return (
     <div className="login-container">
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
-        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
         <button type="submit">Login</button>
       </form>
     </div>

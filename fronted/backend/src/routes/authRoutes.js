@@ -9,8 +9,10 @@ router.post("/register", register);
 
 router.get("/me", authMiddleware, (req, res) => {
   res.json({
-    id: req.user.id,
+    id_user: req.user.id_user,
     username: req.user.username,
+    role: req.user.role,
+    name: req.user.name,
   });
 });
 
